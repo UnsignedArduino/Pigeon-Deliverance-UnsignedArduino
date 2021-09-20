@@ -1,0 +1,38 @@
+{
+    "name": "PIGEON: DELIVERANCE modified by UnsignedArduino",
+    "description": "",
+    "dependencies": {
+        "device": "*",
+        "arcade-background-scroll": "github:microsoft/arcade-background-scroll#ef27275c570030c09dd1b9e0db2f63a8844b0848",
+        "tilemaps": "github:microsoft/pxt-tilemaps#v1.12.0",
+        "Timers": "github:microsoft/arcade-timers#v1.1.0",
+        "settings-blocks": "github:microsoft/pxt-settings-blocks#v1.0.0",
+        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.2.4",
+        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.0.2",
+        "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.1.0"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "assets.json",
+        "tilemap.g.jres",
+        "tilemap.g.ts",
+        "custom.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "branch": "v1.5.56",
+        "tag": "v1.5.56",
+        "commits": "https://github.com/microsoft/pxt-arcade/commits/fb33e381b78eca2163bc40e2b26bdfdc9e7ebd81",
+        "target": "1.5.56",
+        "pxt": "7.1.35",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "blocksprj"
+}
