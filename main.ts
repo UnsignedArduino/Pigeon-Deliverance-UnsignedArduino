@@ -1791,7 +1791,6 @@ function setup () {
     jumpHeight = 36
     jumpVelocity = 0 - Math.sqrt(2 * (gravity * jumpHeight))
     moveSpeed = 75
-    currentLevelIndex = 0
     positionSamplingInterval = 100
     scene.setBackgroundImage(img`
         1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
@@ -2470,6 +2469,7 @@ function createHighScoreEntry (entryIndex: number, text: string) {
     }
 }
 function startLevel (levelIndex: number) {
+    currentLevelIndex = levelIndex
     if (blockSettings.exists("level" + levelIndex + "x")) {
         ghostXPositions = blockSettings.readPositionBuffer("level" + levelIndex + "x")
         ghostYPositions = blockSettings.readPositionBuffer("level" + levelIndex + "y")
