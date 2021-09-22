@@ -574,6 +574,21 @@ function loadMap () {
         createPlane(3, tiles.locationXY(value, tiles.XY.x), tiles.locationXY(value, tiles.XY.y))
     }
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (onStartScreen) {
+        if (game.ask("Reset all data?")) {
+            blockSettings.clear()
+            game.reset()
+        }
+    }
+})
+function write_bool (name: string, value: boolean) {
+    if (value) {
+        blockSettings.writeNumber(name, 1)
+    } else {
+        blockSettings.writeNumber(name, 0)
+    }
+}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile13`, function (sprite, location) {
     if (sprite.bottom > tiles.locationXY(location, tiles.XY.top) + 2) {
         reloadCheckpoint()
@@ -1215,6 +1230,9 @@ function returnPlaneHome (plane: Sprite) {
     timer.after(1000, function () {
         plane.setFlag(SpriteFlag.Ghost, false)
     })
+}
+function read_bool (name: string) {
+    return blockSettings.readNumber(name) == 1
 }
 function getBubbleLetter (letter: string) {
     if (letter == "a") {
@@ -2155,10 +2173,8 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
 })
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     if (onStartScreen) {
-        if (game.ask("Clear all high scores?")) {
-            blockSettings.clear()
-            game.reset()
-        }
+        write_bool("dark_mode", !(darkMode))
+        game.reset()
     }
 })
 function setup () {
@@ -3213,7 +3229,11 @@ let startTime = 0
 let clearTime = 0
 let inGameLevel = false
 let darkMode = false
-darkMode = true
+stats.turnStats(true)
+if (!(blockSettings.exists("dark_mode"))) {
+    write_bool("dark_mode", false)
+}
+darkMode = read_bool("dark_mode")
 showTitleScreen()
 game.onUpdate(function () {
     if (activePlane) {
