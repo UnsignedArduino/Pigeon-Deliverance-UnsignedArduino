@@ -2553,7 +2553,8 @@ function setup () {
 function createLevels () {
     levels = [
     tiles.createSmallMap(tilemap`level9`),
-    tiles.createSmallMap(tilemap`level3`)
+    tiles.createSmallMap(tilemap`level3`),
+    tiles.createSmallMap(tilemap`level12`)
     ]
 }
 function timerText (text: string) {
