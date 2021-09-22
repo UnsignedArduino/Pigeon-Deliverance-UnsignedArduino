@@ -545,6 +545,15 @@ scene.onHitWall(SpriteKind.Player, function (sprite, location) {
         }
     }
 })
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (buttonsEnabled) {
+        if (inGameLevel && !(inPlane)) {
+            if (thePlayer.isHittingTile(CollisionDirection.Bottom)) {
+                thePlayer.vy = jumpVelocity
+            }
+        }
+    }
+})
 function loadMap () {
     tiles.destroySpritesOfKind(SpriteKind.Plane)
     tiles.loadMap(tiles.copyMap(levels[currentLevelIndex]))
@@ -627,12 +636,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             pause(100)
             tiles.destroySpritesOfKind(SpriteKind.Timer)
             scoreBG.destroy()
-            currentLevelIndex += 1
-            if (currentLevelIndex < levels.length) {
-                startLevel(currentLevelIndex)
-            } else {
-                game.over(true)
-            }
+            startLevel(selectLevel())
         }
     }
 })
@@ -1146,7 +1150,7 @@ function showTitleScreen () {
                 c b d d d d d d d d d d b c 
                 . c c c c c c c c c c c c . 
                 `, 30, 0)
-            while (Math.abs(next_x - last_x) < 20) {
+            while (Math.abs(next_x - last_x) < 15) {
                 next_x = randint(50, 110)
             }
             projectile.y = next_x
@@ -1158,7 +1162,7 @@ function showTitleScreen () {
         tiles.destroySpritesOfKind(SpriteKind.Projectile)
         setup()
         createLevels()
-        startLevel(0)
+        startLevel(selectLevel())
     })
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile25`, function (sprite, location) {
@@ -1258,6 +1262,21 @@ function returnPlaneHome (plane: Sprite) {
 }
 function read_bool (name: string) {
     return blockSettings.readNumber(name) == 1
+}
+function selectLevel () {
+    while (true) {
+        currentLevelIndex = game.askForNumber("Select level: (1-" + levels.length + ")", 1)
+        if (currentLevelIndex != currentLevelIndex) {
+            continue;
+        } else if (currentLevelIndex < 1) {
+            continue;
+        } else if (currentLevelIndex > levels.length) {
+            continue;
+        } else {
+            currentLevelIndex += -1
+            return currentLevelIndex
+        }
+    }
 }
 function getBubbleLetter (letter: string) {
     if (letter == "a") {
@@ -3419,10 +3438,10 @@ let pressAToLaunch: Sprite = null
 let last_x = 0
 let next_x = 0
 let projectile: Sprite = null
-let jumpVelocity = 0
-let inPlane = false
 let onStartScreen = false
 let levels: tiles.WorldMap[] = []
+let jumpVelocity = 0
+let inPlane = false
 let moveSpeed = 0
 let gravity = 0
 let brickParticle: Sprite = null
