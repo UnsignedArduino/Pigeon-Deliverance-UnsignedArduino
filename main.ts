@@ -549,17 +549,15 @@ function loadMap () {
             tiles.setWallAt(value, true)
         }
     }
-    for (let value of tiles.getTilesByType(assets.tile`myTile13`)) {
-        tiles.setWallAt(value, false)
-    }
-    for (let value of tiles.getTilesByType(assets.tile`myTile25`)) {
-        tiles.setWallAt(value, false)
-    }
-    for (let value of tiles.getTilesByType(assets.tile`myTile26`)) {
-        tiles.setWallAt(value, false)
-    }
-    for (let value of tiles.getTilesByType(assets.tile`myTile27`)) {
-        tiles.setWallAt(value, false)
+    for (let tiles2 of [
+    assets.tile`myTile13`,
+    assets.tile`myTile25`,
+    assets.tile`myTile26`,
+    assets.tile`myTile27`
+    ]) {
+        for (let value of tiles.getTilesByType(tiles2)) {
+            tiles.setWallAt(value, false)
+        }
     }
     for (let value of tiles.getTilesByType(assets.tile`myTile6`)) {
         createPlane(0, tiles.locationXY(value, tiles.XY.x), tiles.locationXY(value, tiles.XY.y))
