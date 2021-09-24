@@ -4,6 +4,7 @@ namespace SpriteKind {
     export const Timer = SpriteKind.create()
     export const Plane = SpriteKind.create()
     export const ScreenThingy = SpriteKind.create()
+    export const Tombstone = SpriteKind.create()
 }
 function cutOut () {
     checkForCutter()
@@ -1262,6 +1263,129 @@ function returnPlaneHome (plane: Sprite) {
 }
 function read_bool (name: string) {
     return blockSettings.readNumber(name) == 1
+}
+function makeTombstone (x: number, y: number) {
+    tombstone = sprites.create(img`
+        . . c c c c . . 
+        . c c c f c c . 
+        . c f f f f c . 
+        . c c c c c c . 
+        . c f f f f c . 
+        . c c f e c c . 
+        . e c e e e e . 
+        e e e e e e e e 
+        `, SpriteKind.Tombstone)
+    tombstone.setPosition(x, y)
+    tombstone.setFlag(SpriteFlag.Ghost, true)
+    tombstone.setFlag(SpriteFlag.Invisible, true)
+    timer.after(500, function () {
+        tombstone.setFlag(SpriteFlag.Invisible, false)
+        animation.runImageAnimation(
+        tombstone,
+        [img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . e e . . . . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . e e e e e . . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . e e . . . . 
+            . e c c c e e . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . c c c e . . 
+            . e e c e e e . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . c c c c . . 
+            . c c c f c c . 
+            . c e e e e c . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . c c c c . . 
+            . c c c f c c . 
+            . c f f e f c . 
+            . e e e e e e . 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . c c c c . . 
+            . c c c f c c . 
+            . c f f f f c . 
+            . c c e c c c . 
+            . e e e e e e e 
+            `,img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . c c c c . . 
+            . c c c f c c . 
+            . c f f f f c . 
+            . c c c c c c . 
+            . c f e f f c . 
+            . e e e e e e e 
+            `,img`
+            . . . . . . . . 
+            . . c c c c . . 
+            . c c c f c c . 
+            . c f f f f c . 
+            . c c c c c c . 
+            . c f e f f c . 
+            . e c e e e e . 
+            e e e e e e e e 
+            `,img`
+            . . c c c c . . 
+            . c c c f c c . 
+            . c f f f f c . 
+            . c c c c c c . 
+            . c f f f f c . 
+            . c c f e c c . 
+            . e c e e e e . 
+            e e e e e e e e 
+            `],
+        100,
+        false
+        )
+    })
 }
 function selectLevel () {
     while (true) {
@@ -3244,6 +3368,7 @@ function startLevel (levelIndex: number) {
     recordedXPositions = []
     recordedYPositions = []
     loadMap()
+    tiles.destroySpritesOfKind(SpriteKind.Tombstone)
     createPlayer()
     tiles.placeOnRandomTile(thePlayer, assets.tile`myTile1`)
     tiles.setTileAt(tiles.locationOfSprite(thePlayer), assets.tile`transparency8`)
@@ -3422,6 +3547,7 @@ function createPlane (direction: number, x: number, y: number) {
 }
 function reloadCheckpoint () {
     if (!(spriteutils.isDestroyed(thePlayer))) {
+        makeTombstone(thePlayer.x, thePlayer.y)
         thePlayer.destroy()
         timer.background(function () {
             fakePlayer = sprites.create(thePlayer.image, SpriteKind.Decoration)
@@ -3478,6 +3604,7 @@ let distance = 0
 let angle = 0
 let activePlane: Sprite = null
 let pressAToLaunch: Sprite = null
+let tombstone: Sprite = null
 let last_x = 0
 let next_x = 0
 let projectile: Sprite = null
@@ -3537,7 +3664,8 @@ game.onUpdate(function () {
     if (darkMode) {
         if (thePlayer && !(spriteutils.isDestroyed(thePlayer))) {
             thePlayer.image.replace(11, 12)
-        } else if (fakePlayer && !(spriteutils.isDestroyed(fakePlayer))) {
+        }
+        if (fakePlayer && !(spriteutils.isDestroyed(fakePlayer))) {
             fakePlayer.image.replace(11, 12)
         }
     }
