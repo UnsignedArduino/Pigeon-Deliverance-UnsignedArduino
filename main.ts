@@ -2552,11 +2552,11 @@ function setup () {
 }
 function createLevels () {
     levels = [
-    tiles.createSmallMap(tilemap`level9`),
-    tiles.createSmallMap(tilemap`level3`),
     tiles.createSmallMap(tilemap`level12`),
     tiles.createSmallMap(tilemap`level14`),
-    tiles.createSmallMap(tilemap`level15`)
+    tiles.createSmallMap(tilemap`level16`),
+    tiles.createSmallMap(tilemap`level15`),
+    tiles.createSmallMap(tilemap`level18`)
     ]
 }
 function glide_camera_to (x: number, y: number, speed: number) {
