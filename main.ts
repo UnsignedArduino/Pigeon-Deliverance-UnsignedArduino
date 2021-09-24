@@ -2559,6 +2559,19 @@ function createLevels () {
     tiles.createSmallMap(tilemap`level15`)
     ]
 }
+function glide_camera_to (x: number, y: number, speed: number) {
+    if (!(camera) || spriteutils.isDestroyed(camera)) {
+        camera = sprites.create(img`
+            . 
+            `, SpriteKind.Player)
+        camera.setFlag(SpriteFlag.Ghost, true)
+        camera.setFlag(SpriteFlag.Invisible, true)
+    }
+    camera.setPosition(scene.cameraProperty(CameraProperty.X), scene.cameraProperty(CameraProperty.Y))
+    scene.cameraFollowSprite(camera)
+    moveTo(camera, x, y, speed, true)
+    camera.destroy()
+}
 function timerText (text: string) {
     tiles.destroySpritesOfKind(SpriteKind.Timer)
     for (let index = 0; index <= text.length - 1; index++) {
@@ -3236,13 +3249,19 @@ function startLevel (levelIndex: number) {
     tiles.setTileAt(tiles.locationOfSprite(thePlayer), assets.tile`transparency8`)
     currentCheckpoint = tiles.locationOfSprite(thePlayer)
     controller.moveSprite(thePlayer, 0, 0)
+    location = tiles.getTilesByType(assets.tile`myTile0`)[0]
+    scene.centerCameraAt(tiles.locationXY(location, tiles.XY.x), tiles.locationXY(location, tiles.XY.y))
     cutOut()
+    pause(1000)
+    glide_camera_to(tiles.locationXY(currentCheckpoint, tiles.XY.x), tiles.locationXY(currentCheckpoint, tiles.XY.y), 100)
+    pause(1000)
     introBubbleText("ready.", true)
     introBubbleText("set.", true)
     pause(200)
     introBubbleText("go!", false)
     inGameLevel = true
     controller.moveSprite(thePlayer, moveSpeed, 0)
+    scene.cameraFollowSprite(thePlayer)
     if (darkMode) {
         playerGhost = sprites.create(img`
             . . . . d d . . 
@@ -3425,11 +3444,13 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile26`, function (sprite, 
 })
 let newPlane: Sprite = null
 let ghostIndex = 0
+let location: tiles.Location = null
 let ghostYPositions: number[] = []
 let ghostXPositions: number[] = []
 let renderText = ""
 let milliChunk = ""
 let letterSprite: Sprite = null
+let camera: Sprite = null
 let positionSamplingInterval = 0
 let jumpHeight = 0
 let checkpointAlert: Sprite = null
