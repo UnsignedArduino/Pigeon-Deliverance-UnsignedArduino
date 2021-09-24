@@ -2569,7 +2569,7 @@ function glide_camera_to (x: number, y: number, speed: number) {
     }
     camera.setPosition(scene.cameraProperty(CameraProperty.X), scene.cameraProperty(CameraProperty.Y))
     scene.cameraFollowSprite(camera)
-    moveTo(camera, x, y, speed, true)
+    speedableMoveTo(camera, x, y, speed, true)
     camera.destroy()
 }
 function timerText (text: string) {
@@ -3442,6 +3442,25 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile26`, function (sprite, 
         reloadCheckpoint()
     }
 })
+function speedableMoveTo (sprite: Sprite, x: number, y: number, speed: number, thenStop: boolean) {
+    angle = Math.atan2(y - sprite.y, x - sprite.x)
+    distance = Math.sqrt((sprite.y - y) ** 2 + (sprite.x - x) ** 2)
+    spriteutils.setVelocityAtAngle(sprite, angle, speed)
+    targetTime = game.runtime() + distance / speed * 1000
+    pause(500)
+    while (game.runtime() < targetTime) {
+        if (controller.A.isPressed()) {
+            speedableMoveTo(sprite, x, y, 500, thenStop)
+            return
+        }
+        pause(20)
+    }
+    if (thenStop) {
+        sprite.setPosition(x, y)
+        sprite.setVelocity(0, 0)
+    }
+}
+let targetTime = 0
 let newPlane: Sprite = null
 let ghostIndex = 0
 let location: tiles.Location = null
